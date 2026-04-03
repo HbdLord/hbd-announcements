@@ -2,12 +2,90 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск картинки</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .error {
+            color: red;
+            padding: 20px;
+            background: #ffeeee;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info {
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1></h1>
-    <p></p>
+    <h1>Поиск изображения</h1>
+    <div id="image-container">
+        <p>Загрузка...</p>
+    </div>
+    <div class="info">
+        Поддерживаемые форматы: PNG, JPG, JPEG, GIF, SVG, WEBP
+    </div>
 
-    <img src="4fb6189078d33257ываавыыва.png" alt="">
-</body>
-</html>
+    <script>
+        // Список возможных названий файлов для поиска
+        const possibleNames = [
+            'image.png', 'image.jpg', 'image.jpeg', 'image.gif', 'image.webp',
+            'photo.png', 'photo.jpg', 'img.png', 'img.jpg', 'picture.png',
+            'screenshot.png', '1.png', 'main.png', 'logo.png', 'cover.jpg'
+        ];
+        
+        // Список возможных путей (папок)
+        const possiblePaths = [
+            '',           // корневая папка
+            'images/',    // папка images
+            'img/',       // папка img
+            'assets/',    // папка assets
+            'pics/',      // папка pics
+            'photos/',    // папка photos
+            'media/'      // папка media
+        ];
+        
+        // Поддерживаемые форматы
+        const extensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'];
+        
+        // Функция поиска картинки
+        async function findImage() {
+            const container = document.getElementById('image-container');
+            
+            // Получаем текущий путь к странице
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            
+            // Создаём массив всех возможных вариантов путей к картинкам
+            const candidates = [];
+            
+            // 1. Ищем в текущей папке все возможные имена и форматы
+            possibleNames.forEach(name => {
+                candidates.push(name);
+                // Добавляем варианты с разными расширениями
+                const nameWithoutExt = name.substring(0, name.lastIndexOf('.'));
+                if (nameWithoutExt) {
+                    extensions.forEach(ext => {
+                        if (!name.endsWith(ext)) {
+                            candidates.push(`${nameWithoutExt}.${ext}`);
+                        }
+                    });
+                }
+            });
+            
+            // 2. Ищем в подпапках
+            possiblePaths.forEach(path => {
+                possibleNames.forEach(name
