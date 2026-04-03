@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>HBD Upcomings</title>
+    <link rel="icon" type="image/png" href="icon.png" id="favicon">
     <style>
         * {
             margin: 0;
@@ -71,6 +72,16 @@
             '../../image.png'
         ];
 
+        const iconPaths = [
+            'icon.png',
+            './icon.png',
+            'images/icon.png',
+            'img/icon.png',
+            'assets/icon.png',
+            '../icon.png',
+            '../../icon.png'
+        ];
+
         async function findAndDisplayImage() {
             const container = document.getElementById('imageContainer');
             
@@ -87,7 +98,21 @@
             container.innerHTML = '<div class="error-message">image.png not found</div>';
         }
 
+        async function findAndSetIcon() {
+            for (const path of iconPaths) {
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    if (response.ok) {
+                        const favicon = document.getElementById('favicon');
+                        favicon.href = path;
+                        return;
+                    }
+                } catch(e) {}
+            }
+        }
+
         findAndDisplayImage();
+        findAndSetIcon();
     </script>
 </body>
 </html>
