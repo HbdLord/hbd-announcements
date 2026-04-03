@@ -24,6 +24,30 @@
         body {
             background: black;
         }
+        .darkness-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 100;
+            pointer-events: none;
+            animation: fadeOutDarkness 4.5s ease-out forwards;
+        }
+        
+        @keyframes fadeOutDarkness {
+            0% {
+                opacity: 1;
+            }
+            30% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
         
         .container {
             position: fixed;
@@ -44,34 +68,30 @@
             height: auto;
             object-fit: contain;
             display: block;
-            animation: fadeInScale 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            opacity: 0;
+            animation: fadeInFromDark 4s ease-out forwards;
         }
         
-        /* Анимация появления */
-        @keyframes fadeInScale {
+        @keyframes fadeInFromDark {
             0% {
                 opacity: 0;
-                transform: scale(0.95);
+                transform: scale(0.98);
+                filter: brightness(0.3);
+            }
+            20% {
+                opacity: 0;
+                transform: scale(0.98);
+                filter: brightness(0.3);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.99);
+                filter: brightness(0.7);
             }
             100% {
                 opacity: 1;
                 transform: scale(1);
-            }
-        }
-        
-        /* Пульсация при наведении */
-        .container img:hover {
-            animation: gentlePulse 1.2s ease infinite;
-        }
-        
-        @keyframes gentlePulse {
-            0%, 100% {
-                transform: scale(1);
-                filter: drop-shadow(0 0 0px rgba(255,255,255,0));
-            }
-            50% {
-                transform: scale(1.01);
-                filter: drop-shadow(0 0 20px rgba(255,255,255,0.15));
+                filter: brightness(1);
             }
         }
         
@@ -82,19 +102,9 @@
             font-size: 20px;
             padding: 20px;
             background: black;
-            animation: blinkText 2s ease infinite;
+            opacity: 0;
+            animation: fadeInFromDark 4s ease-out forwards;
         }
-        
-        @keyframes blinkText {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.4;
-            }
-        }
-        
-        /* Анимация фона - медленное свечение */
         body::before {
             content: '';
             position: fixed;
@@ -102,23 +112,29 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, rgba(30,30,50,0.3) 0%, rgba(0,0,0,0) 70%);
-            animation: bgPulse 4s ease infinite;
+            background: radial-gradient(circle at center, rgba(30,30,50,0) 0%, rgba(0,0,0,0) 70%);
             pointer-events: none;
             z-index: 0;
+            opacity: 0;
+            animation: bgReveal 5s ease-out forwards;
         }
         
-        @keyframes bgPulse {
-            0%, 100% {
-                opacity: 0.3;
+        @keyframes bgReveal {
+            0% {
+                opacity: 0;
             }
-            50% {
-                opacity: 0.6;
+            60% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0.4;
             }
         }
     </style>
 </head>
 <body>
+    <div class="darkness-overlay"></div>
+    
     <div class="container" id="imageContainer">
         <div class="error-message">...</div>
     </div>
