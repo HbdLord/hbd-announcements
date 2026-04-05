@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HBD | Upcomings</title>
+    <title>HBD | upcomings</title>
     <link rel="icon" type="image/png" href="icon.png" id="favicon">
     <style>
         * {
@@ -34,14 +34,11 @@
             background: black;
             z-index: 100;
             pointer-events: none;
-            animation: fadeOutDarkness 4s ease-out forwards;
+            animation: fadeOutDarkness 2s ease-out forwards;
         }
         
         @keyframes fadeOutDarkness {
             0% {
-                opacity: 1;
-            }
-            30% {
                 opacity: 1;
             }
             100% {
@@ -62,7 +59,7 @@
             justify-content: center;
         }
         
-        .container img {
+        .container video {
             max-width: 60%;
             max-height: 60%;
             width: auto;
@@ -71,37 +68,18 @@
             display: block;
             opacity: 0;
             transform: scale(0.7);
-            animation: fadeInScale 4s ease-out forwards;
+            animation: fadeInScale 1.5s ease-out forwards;
         }
         
         @keyframes fadeInScale {
             0% {
                 opacity: 0;
                 transform: scale(0.7);
-                filter: brightness(0.3);
-            }
-            30% {
-                opacity: 0;
-                transform: scale(0.7);
-                filter: brightness(0.3);
             }
             100% {
                 opacity: 1;
                 transform: scale(1);
-                filter: brightness(1);
             }
-        }
-        
-        .error-message {
-            color: white;
-            text-align: center;
-            font-family: monospace;
-            font-size: 20px;
-            padding: 20px;
-            background: black;
-            opacity: 0;
-            transform: scale(0.7);
-            animation: fadeInScale 4s ease-out forwards;
         }
         
         body::before {
@@ -115,14 +93,11 @@
             pointer-events: none;
             z-index: 0;
             opacity: 0;
-            animation: bgReveal 4s ease-out forwards;
+            animation: bgReveal 2s ease-out forwards;
         }
         
         @keyframes bgReveal {
             0% {
-                opacity: 0;
-            }
-            60% {
                 opacity: 0;
             }
             100% {
@@ -132,65 +107,57 @@
     </style>
 </head>
 <body>
-    <!-- я виталя -->
     <div class="darkness-overlay"></div>
     
-    <div class="container" id="imageContainer">
+    <div class="container" id="videoContainer">
         <div class="error-message">...</div>
     </div>
 
     <script>
-        const possiblePaths = [
-            'image.png',
-            './image.png',
-            'images/image.png',
-            'img/image.png',
-            'assets/image.png',
-            '../image.png',
-            '../../image.png'
-        ];
-
-        const iconPaths = [
-            'icon.png',
-            './icon.png',
-            'images/icon.png',
-            'img/icon.png',
-            'assets/icon.png',
-            '../icon.png',
-            '../../icon.png'
-        ];
-
-        async function findAndDisplayImage() {
-            const container = document.getElementById('imageContainer');
-            
-            for (const path of possiblePaths) {
-                try {
-                    const response = await fetch(path, { method: 'HEAD' });
-                    if (response.ok) {
-                        container.innerHTML = `<img src="${path}" alt="Image">`;
-                        return;
-                    }
-                } catch(e) {}
-            }
-            
-            container.innerHTML = '<div class="error-message">image.png not found</div>';
+        const video = document.createElement('video');
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = false;
+        video.playsInline = true;
+        video.style.opacity = '0';
+        video.style.transform = 'scale(0.7)';
+        video.style.animation = 'fadeInScale 1.5s ease-out forwards';
+        
+        const videoPaths = ['video.mp4', './video.mp4', 'videos/video.mp4', 'assets/video.mp4'];
+        
+        let videoLoaded = false;
+        
+        for (const path of videoPaths) {
+            if (videoLoaded) break;
+            fetch(path, { method: 'HEAD' }).then(response => {
+                if (response.ok && !videoLoaded) {
+                    videoLoaded = true;
+                    video.src = path;
+                    const container = document.getElementById('videoContainer');
+                    container.innerHTML = '';
+                    container.appendChild(video);
+                    video.play();
+                }
+            }).catch(() => {});
         }
-
-        async function findAndSetIcon() {
-            for (const path of iconPaths) {
-                try {
-                    const response = await fetch(path, { method: 'HEAD' });
-                    if (response.ok) {
-                        const favicon = document.getElementById('favicon');
-                        favicon.href = path;
-                        return;
-                    }
-                } catch(e) {}
+        
+        setTimeout(() => {
+            if (!videoLoaded) {
+                const container = document.getElementById('videoContainer');
+                container.innerHTML = '';
             }
+        }, 500);
+        
+        const iconPaths = ['icon.png', './icon.png', 'images/icon.png', 'assets/icon.png'];
+        
+        for (const path of iconPaths) {
+            fetch(path, { method: 'HEAD' }).then(response => {
+                if (response.ok) {
+                    const favicon = document.getElementById('favicon');
+                    favicon.href = path;
+                }
+            }).catch(() => {});
         }
-
-        findAndDisplayImage();
-        findAndSetIcon();
     </script>
 </body>
 </html>
