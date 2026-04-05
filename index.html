@@ -123,7 +123,7 @@
         const video = document.createElement('video');
         video.loop = true;
         video.muted = false;
-        video.volume = 1.0;
+        video.volume = 0.2;
         video.playsInline = true;
         video.style.maxWidth = '60%';
         video.style.maxHeight = '60%';
@@ -155,22 +155,13 @@
         
         playBtn.addEventListener('click', function() {
             video.classList.add('visible');
+            video.volume = 0.2;
             video.play();
             playBtn.classList.add('hide');
         });
         
-        const iconPaths = ['icon.png', './icon.png', 'images/icon.png', 'img/icon.png', 'assets/icon.png', 'favicon.png', './favicon.png'];
         const favicon = document.getElementById('favicon');
-        let iconSet = false;
-        
-        for (let i = 0; i < iconPaths.length; i++) {
-            fetch(iconPaths[i], { method: 'HEAD' }).then(function(r) {
-                if (r.ok && !iconSet) {
-                    iconSet = true;
-                    favicon.href = iconPaths[i];
-                }
-            }).catch(function() {});
-        }
+        favicon.href = 'icon.png?v=' + Date.now();
     </script>
 </body>
 </html>
