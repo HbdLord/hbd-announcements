@@ -25,28 +25,6 @@
             background: black;
         }
         
-        .darkness-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 100;
-            pointer-events: none;
-            animation: fadeOutDarkness 2s ease-out forwards;
-        }
-        
-        @keyframes fadeOutDarkness {
-            0% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-        
         .container {
             position: fixed;
             top: 0;
@@ -66,6 +44,52 @@
             height: auto;
             object-fit: contain;
             display: block;
+            opacity: 0;
+            transition: opacity 2s ease-out;
+        }
+        
+        .container video.visible {
+            opacity: 1;
+        }
+        
+        .play-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 200;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-btn:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .play-btn::before {
+            content: '';
+            position: relative;
+            left: 4px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 25px;
+            border-color: transparent transparent transparent white;
+        }
+        
+        .play-btn.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
         
         body::before {
@@ -93,13 +117,14 @@
     </style>
 </head>
 <body>
-    <div class="darkness-overlay"></div>
-    <div class="container" id="videoContainer"></div>
+    <div class="container" id="videoContainer">
+        <div class="play-btn" id="playBtn"></div>
+    </div>
 
     <script>
         const container = document.getElementById('videoContainer');
+        const playBtn = document.getElementById('playBtn');
         const video = document.createElement('video');
-        video.autoplay = true;
         video.loop = true;
         video.muted = false;
         video.volume = 1.0;
@@ -111,23 +136,34 @@
         video.style.objectFit = 'contain';
         
         const paths = ['video.mp4', './video.mp4', 'videos/video.mp4', 'assets/video.mp4'];
-        let videoStarted = false;
+        let videoLoaded = false;
         
-        function startVideo(url) {
-            if (videoStarted) return;
-            videoStarted = true;
+        function loadVideo(url) {
+            if (videoLoaded) return;
+            videoLoaded = true;
             video.src = url;
-            container.appendChild(video);
-            video.play();
+            video.load();
+            
+            video.addEventListener('canplaythrough', function() {
+                container.appendChild(video);
+                setTimeout(function() {
+                    video.classList.add('visible');
+                }, 50);
+            });
         }
         
         for (let i = 0; i < paths.length; i++) {
             fetch(paths[i], { method: 'HEAD' }).then(function(r) {
-                if (r.ok && !videoStarted) {
-                    startVideo(paths[i]);
+                if (r.ok && !videoLoaded) {
+                    loadVideo(paths[i]);
                 }
             }).catch(function() {});
         }
+        
+        playBtn.addEventListener('click', function() {
+            video.play();
+            playBtn.classList.add('hide');
+        });
         
         const iconPaths = ['icon.png', './icon.png', 'images/icon.png', 'img/icon.png', 'assets/icon.png'];
         const favicon = document.getElementById('favicon');
