@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HBD | Upcomings</title>
+    <title>HBD | upcomings</title>
     <link rel="icon" type="image/png" href="icon.png" id="favicon">
     <style>
         * {
@@ -66,20 +66,6 @@
             height: auto;
             object-fit: contain;
             display: block;
-            opacity: 0;
-            transform: scale(0.7);
-            animation: fadeInScale 1.5s ease-out forwards;
-        }
-        
-        @keyframes fadeInScale {
-            0% {
-                opacity: 0;
-                transform: scale(0.7);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
         }
         
         body::before {
@@ -116,9 +102,6 @@
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
-        video.style.opacity = '0';
-        video.style.transform = 'scale(0.7)';
-        video.style.animation = 'fadeInScale 1.5s ease-out forwards';
         video.style.maxWidth = '60%';
         video.style.maxHeight = '60%';
         video.style.width = 'auto';
