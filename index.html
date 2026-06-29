@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>HBD | upcomings</title>
-    <link rel="icon" type="image/gif" href="icon.gif" id="favicon">
+    <link rel="icon" type="image/png" href="icon.png" id="favicon">
     <style>
         * {
             margin: 0;
@@ -62,7 +62,7 @@
     </div>
 
     <script>
-        // Изменено на поиск GIF файлов
+        // Только основное изображение ищет GIF
         const possiblePaths = [
             'image.gif',
             './image.gif',
@@ -73,15 +73,15 @@
             '../../image.gif'
         ];
 
-        // Изменено на поиск GIF иконок
+        // Иконка остаётся PNG
         const iconPaths = [
-            'icon.gif',
-            './icon.gif',
-            'images/icon.gif',
-            'img/icon.gif',
-            'assets/icon.gif',
-            '../icon.gif',
-            '../../icon.gif'
+            'icon.png',
+            './icon.png',
+            'images/icon.png',
+            'img/icon.png',
+            'assets/icon.png',
+            '../icon.png',
+            '../../icon.png'
         ];
 
         async function findAndDisplayImage() {
@@ -91,13 +91,6 @@
                 try {
                     const response = await fetch(path, { method: 'HEAD' });
                     if (response.ok) {
-                        // Проверяем, что это GIF
-                        const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('gif')) {
-                            container.innerHTML = `<img src="${path}" alt="GIF Image">`;
-                            return;
-                        }
-                        // Если content-type не указан, всё равно пробуем загрузить
                         container.innerHTML = `<img src="${path}" alt="GIF Image">`;
                         return;
                     }
@@ -114,7 +107,6 @@
                     if (response.ok) {
                         const favicon = document.getElementById('favicon');
                         favicon.href = path;
-                        favicon.type = 'image/gif';
                         return;
                     }
                 } catch(e) {}
