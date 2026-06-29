@@ -58,22 +58,20 @@
 </head>
 <body>
     <div class="container" id="imageContainer">
-        <div class="error-message"></div>
+        <div class="error-message">...</div>
     </div>
 
     <script>
-        // Только основное изображение ищет GIF
         const possiblePaths = [
-            'image.gif',
-            './image.gif',
-            'images/image.gif',
-            'img/image.gif',
-            'assets/image.gif',
-            '../image.gif',
-            '../../image.gif'
+            'image.png',
+            './image.png',
+            'images/image.png',
+            'img/image.png',
+            'assets/image.png',
+            '../image.png',
+            '../../image.png'
         ];
 
-        // Иконка остаётся PNG
         const iconPaths = [
             'icon.png',
             './icon.png',
@@ -91,13 +89,13 @@
                 try {
                     const response = await fetch(path, { method: 'HEAD' });
                     if (response.ok) {
-                        container.innerHTML = `<img src="${path}" alt="GIF Image">`;
+                        container.innerHTML = `<img src="${path}" alt="Image">`;
                         return;
                     }
                 } catch(e) {}
             }
             
-            container.innerHTML = '<div class="error-message">image.gif not found</div>';
+            container.innerHTML = '<div class="error-message">image.png not found</div>';
         }
 
         async function findAndSetIcon() {
