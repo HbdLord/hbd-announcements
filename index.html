@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>HBD | upcomings</title>
-    <link rel="icon" type="image/png" href="icon.png" id="favicon">
+    <link rel="icon" type="image/png" href="" id="favicon">
     <style>
         * {
             margin: 0;
@@ -46,73 +46,38 @@
             display: block;
         }
         
-        .error-message {
-            color: white;
-            text-align: center;
-            font-family: monospace;
-            font-size: 20px;
-            padding: 20px;
-            background: black;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(30,30,50,0) 0%, rgba(0,0,0,0) 70%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: bgReveal 2s ease-out forwards;
+        }
+        
+        @keyframes bgReveal {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 0.4;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container" id="imageContainer">
-        <div class="error-message">...</div>
+        <img src="image.png" alt="image" id="mainImage">
     </div>
 
     <script>
-        const possiblePaths = [
-            'image.png',
-            './image.png',
-            'images/image.png',
-            'img/image.png',
-            'assets/image.png',
-            '../image.png',
-            '../../image.png'
-        ];
-
-        const iconPaths = [
-            'icon.png',
-            './icon.png',
-            'images/icon.png',
-            'img/icon.png',
-            'assets/icon.png',
-            '../icon.png',
-            '../../icon.png'
-        ];
-
-        async function findAndDisplayImage() {
-            const container = document.getElementById('imageContainer');
-            
-            for (const path of possiblePaths) {
-                try {
-                    const response = await fetch(path, { method: 'HEAD' });
-                    if (response.ok) {
-                        container.innerHTML = `<img src="${path}" alt="Image">`;
-                        return;
-                    }
-                } catch(e) {}
-            }
-            
-            container.innerHTML = '<div class="error-message">image.png not found</div>';
-        }
-
-        async function findAndSetIcon() {
-            for (const path of iconPaths) {
-                try {
-                    const response = await fetch(path, { method: 'HEAD' });
-                    if (response.ok) {
-                        const favicon = document.getElementById('favicon');
-                        favicon.href = path;
-                        return;
-                    }
-                } catch(e) {}
-            }
-        }
-
-        findAndDisplayImage();
-        findAndSetIcon();
+        const favicon = document.getElementById('favicon');
+        favicon.href = 'icon.png?v=' + Date.now();
     </script>
 </body>
 </html>
