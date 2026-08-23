@@ -37,13 +37,55 @@
             justify-content: center;
         }
         
-        .container img {
+        .container video {
             max-width: 60%;
             max-height: 60%;
             width: auto;
             height: auto;
             object-fit: contain;
+            display: none;
+        }
+        
+        .container video.visible {
             display: block;
+        }
+        
+        .play-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 200;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-btn:hover {
+            background: rgba(255,255,255,0.4);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .play-btn::before {
+            content: '';
+            position: relative;
+            left: 4px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 15px 0 15px 25px;
+            border-color: transparent transparent transparent white;
+        }
+        
+        .play-btn.hide {
+            display: none;
         }
         
         body::before {
@@ -71,11 +113,53 @@
     </style>
 </head>
 <body>
-    <div class="container" id="imageContainer">
-        <img src="image.png" alt="image" id="mainImage">
+    <div class="container" id="videoContainer">
+        <div class="play-btn" id="playBtn"></div>
     </div>
 
     <script>
+        const container = document.getElementById('videoContainer');
+        const playBtn = document.getElementById('playBtn');
+        const video = document.createElement('video');
+        video.loop = true;
+        video.muted = false;
+        video.volume = 0.2;
+        video.playsInline = true;
+        video.style.maxWidth = '60%';
+        video.style.maxHeight = '60%';
+        video.style.width = 'auto';
+        video.style.height = 'auto';
+        video.style.objectFit = 'contain';
+        
+        const paths = ['video.mp4', './video.mp4', 'videos/video.mp4', 'assets/video.mp4'];
+        let videoLoaded = false;
+        
+        function loadVideo(url) {
+            if (videoLoaded) return;
+            videoLoaded = true;
+            video.src = url;
+            video.load();
+            
+            video.addEventListener('canplaythrough', function() {
+                container.appendChild(video);
+            });
+        }
+        
+        for (let i = 0; i < paths.length; i++) {
+            fetch(paths[i], { method: 'HEAD' }).then(function(r) {
+                if (r.ok && !videoLoaded) {
+                    loadVideo(paths[i]);
+                }
+            }).catch(function() {});
+        }
+        
+        playBtn.addEventListener('click', function() {
+            video.classList.add('visible');
+            video.volume = 0.2;
+            video.play();
+            playBtn.classList.add('hide');
+        });
+        
         const favicon = document.getElementById('favicon');
         favicon.href = 'icon.png?v=' + Date.now();
     </script>
